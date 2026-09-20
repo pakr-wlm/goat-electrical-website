@@ -330,14 +330,18 @@
   <section id="service-area" class="service-area">
     <div class="wrap">
       <h2 class="reveal">Serving Dalton &amp; Northwest Georgia</h2>
-      <ul class="area-list">
-        <li>Dalton, GA</li>
-        <li>Rocky Face, GA</li>
-        <li>Chatsworth, GA</li>
-        <li>Calhoun, GA</li>
-        <li>Chattanooga, TN</li>
-        <li>East Ridge, TN</li>
+      <p class="area-hint reveal">Tap a city to see it on the map.</p>
+      <ul class="area-list" id="area-list">
+        <li><button type="button" class="area-btn is-active" data-area="Dalton, GA" aria-pressed="true">Dalton, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Rocky Face, GA" aria-pressed="false">Rocky Face, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Chatsworth, GA" aria-pressed="false">Chatsworth, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Calhoun, GA" aria-pressed="false">Calhoun, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Chattanooga, TN" aria-pressed="false">Chattanooga, TN</button></li>
+        <li><button type="button" class="area-btn" data-area="East Ridge, TN" aria-pressed="false">East Ridge, TN</button></li>
       </ul>
+      <div class="area-map reveal">
+        <iframe id="area-map-frame" title="Map of Goat Electrical's service area" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Dalton%2C%20GA&output=embed"></iframe>
+      </div>
       <a class="btn btn-accent btn-lg" href="tel:+17069807428">Call (706) 980-7428</a>
     </div>
   </section>
@@ -519,6 +523,17 @@
   menuToggle.addEventListener('click', function () { setMenu(!mobileMenu.classList.contains('is-open')); });
   mobileMenu.addEventListener('click', function (e) { if (e.target.tagName === 'A') { setMenu(false); } });
   window.addEventListener('resize', function () { if (window.innerWidth > 860) { setMenu(false); } });
+
+  var areaButtons = document.querySelectorAll('.area-btn');
+  var areaMapFrame = document.getElementById('area-map-frame');
+  areaButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      areaButtons.forEach(function (b) { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+      areaMapFrame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(btn.dataset.area) + '&output=embed';
+    });
+  });
 
   var header = document.getElementById('site-header');
   var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 12); };

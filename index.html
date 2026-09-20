@@ -645,8 +645,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .services-grid.four { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 1000px) { .services-grid.four { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .services-grid.four { grid-template-columns: 1fr; } }
+.area-hint { color: #c9cdd6; font-size: 14px; margin: -8px 0 20px; }
 .area-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; list-style: none; margin: 0 auto 28px; padding: 0; max-width: 760px; }
-.area-list li { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 8px 16px; font-weight: 600; font-size: 14px; color: #fff; }
+.area-list li { display: contents; }
+.area-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 8px 16px; font-weight: 600; font-size: 14px; font-family: inherit; color: #fff; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.area-btn:hover { background: rgba(255,255,255,.18); }
+.area-btn.is-active { background: #c60012; border-color: #c60012; }
+.area-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.area-map { max-width: 760px; margin: 0 auto 28px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.18); }
+.area-map iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
 .gallery-grid.g4 { grid-template-columns: repeat(4, 1fr); }
 
 </style>
@@ -959,14 +966,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   <section id="service-area" class="service-area">
     <div class="wrap">
       <h2 class="reveal">Serving Dalton &amp; Northwest Georgia</h2>
-      <ul class="area-list">
-        <li>Dalton, GA</li>
-        <li>Rocky Face, GA</li>
-        <li>Chatsworth, GA</li>
-        <li>Calhoun, GA</li>
-        <li>Chattanooga, TN</li>
-        <li>East Ridge, TN</li>
+      <p class="area-hint reveal">Tap a city to see it on the map.</p>
+      <ul class="area-list" id="area-list">
+        <li><button type="button" class="area-btn is-active" data-area="Dalton, GA" aria-pressed="true">Dalton, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Rocky Face, GA" aria-pressed="false">Rocky Face, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Chatsworth, GA" aria-pressed="false">Chatsworth, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Calhoun, GA" aria-pressed="false">Calhoun, GA</button></li>
+        <li><button type="button" class="area-btn" data-area="Chattanooga, TN" aria-pressed="false">Chattanooga, TN</button></li>
+        <li><button type="button" class="area-btn" data-area="East Ridge, TN" aria-pressed="false">East Ridge, TN</button></li>
       </ul>
+      <div class="area-map reveal">
+        <iframe id="area-map-frame" title="Map of Goat Electrical's service area" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Dalton%2C%20GA&output=embed"></iframe>
+      </div>
       <a class="btn btn-accent btn-lg" href="tel:+17069807428">Call (706) 980-7428</a>
     </div>
   </section>
@@ -1148,6 +1159,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   menuToggle.addEventListener('click', function () { setMenu(!mobileMenu.classList.contains('is-open')); });
   mobileMenu.addEventListener('click', function (e) { if (e.target.tagName === 'A') { setMenu(false); } });
   window.addEventListener('resize', function () { if (window.innerWidth > 860) { setMenu(false); } });
+
+  var areaButtons = document.querySelectorAll('.area-btn');
+  var areaMapFrame = document.getElementById('area-map-frame');
+  areaButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      areaButtons.forEach(function (b) { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+      areaMapFrame.src = 'https://www.google.com/maps?q=' + encodeURIComponent(btn.dataset.area) + '&output=embed';
+    });
+  });
 
   var header = document.getElementById('site-header');
   var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 12); };
